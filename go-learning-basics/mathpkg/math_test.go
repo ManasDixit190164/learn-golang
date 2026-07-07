@@ -1,21 +1,21 @@
-package mathpkg
+package mathpkg // package declaration
 
-import "testing"
+import "testing" // statement
 
-func TestAdd(t *testing.T) {
-    got := Add(2, 3)
-    want := 5
+func TestAdd(t *testing.T) { // function declaration
+    got := Add(2, 3) // declare and initialize variable
+    want := 5 // declare and initialize variable
 
-    if got != want {
-        t.Fatalf("Add(2, 3) = %d; want %d", got, want)
-    }
-}
+    if got != want { // check condition
+        t.Fatalf("Add(2, 3) = %d; want %d", got, want) // assign value
+    } // statement
+} // statement
 
-func TestMultiply(t *testing.T) {
-    got := Multiply(2, 3)
-    want := 6
+func TestMultiply(t *testing.T) { // function declaration
+    got := Multiply(2, 3) // declare and initialize variable
+    want := 6 // declare and initialize variable
 
-    if got != want {
-        t.Fatalf("Multiply(2, 3) = %d; want %d", got, want)
-    }
-}
+    if got != want { // check condition
+        t.Fatalf("Multiply(2, 3) = %d; want %d", got, want) // assign value
+    } // statement
+} // statement

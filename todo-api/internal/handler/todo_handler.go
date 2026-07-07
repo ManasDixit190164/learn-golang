@@ -1,215 +1,215 @@
-package handler
+package handler // package declaration
 
-import (
-	"encoding/json"
-	"errors"
-	"net/http"
-	"strconv"
-	"strings"
+import ( // start import block
+	"encoding/json" // import package
+	"errors" // import package
+	"net/http" // import package
+	"strconv" // import package
+	"strings" // import package
 
-	"github.com/manasdixit190164/todo-api/internal/domain"
-	"github.com/manasdixit190164/todo-api/internal/repository"
-	"github.com/manasdixit190164/todo-api/internal/service"
-	"github.com/manasdixit190164/todo-api/pkg/response"
-)
+	"github.com/manasdixit190164/todo-api/internal/domain" // import package
+	"github.com/manasdixit190164/todo-api/internal/repository" // import package
+	"github.com/manasdixit190164/todo-api/internal/service" // import package
+	"github.com/manasdixit190164/todo-api/pkg/response" // import package
+) // end import block or close block
 
-type TodoHandler struct {
-	service *service.TodoService
-}
+type TodoHandler struct { // type/struct declaration
+	service *service.TodoService // statement
+} // statement
 
-func NewTodoHandler(service *service.TodoService) *TodoHandler {
-	return &TodoHandler{
-		service: service,
-	}
-}
+func NewTodoHandler(service *service.TodoService) *TodoHandler { // function declaration
+	return &TodoHandler{ // return result or error
+		service: service, // statement
+	} // statement
+} // statement
 
-func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		handlerMethodNotAllowed(w)
-		return
-	}
+func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) { // function declaration
+	if r.Method != http.MethodPost { // check condition
+		handlerMethodNotAllowed(w) // statement
+		return // return
+	} // statement
 
-	var req domain.CreateTodoRequest
+	var req domain.CreateTodoRequest // variable declaration
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		response.JSON(w, http.StatusBadRequest, response.APIResponse{
-			Success: false,
-			Error:   "invalid request body",
-		})
-		return
-	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil { // decode JSON request into struct
+		response.JSON(w, http.StatusBadRequest, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   "invalid request body", // statement
+		}) // statement
+		return // return
+	} // statement
 
-	todo, err := h.service.Create(req)
-	if err != nil {
-		response.JSON(w, http.StatusBadRequest, response.APIResponse{
-			Success: false,
-			Error:   err.Error(),
-		})
-		return
-	}
+	todo, err := h.service.Create(req) // declare and initialize variable
+	if err != nil { // check condition
+		response.JSON(w, http.StatusBadRequest, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   err.Error(), // statement
+		}) // statement
+		return // return
+	} // statement
 
-	response.JSON(w, http.StatusCreated, response.APIResponse{
-		Success: true,
-		Message: "todo created successfully",
-		Data:    todo,
-	})
-}
+	response.JSON(w, http.StatusCreated, response.APIResponse{ // write a JSON API response
+		Success: true, // statement
+		Message: "todo created successfully", // statement
+		Data:    todo, // statement
+	}) // statement
+} // statement
 
-func (h *TodoHandler) GetTodos(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		handlerMethodNotAllowed(w)
-		return
-	}
+func (h *TodoHandler) GetTodos(w http.ResponseWriter, r *http.Request) { // function declaration
+	if r.Method != http.MethodGet { // check condition
+		handlerMethodNotAllowed(w) // statement
+		return // return
+	} // statement
 
-	todos, err := h.service.GetAll()
-	if err != nil {
-		response.JSON(w, http.StatusInternalServerError, response.APIResponse{
-			Success: false,
-			Error:   "failed to fetch todos",
-		})
-		return
-	}
+	todos, err := h.service.GetAll() // declare and initialize variable
+	if err != nil { // check condition
+		response.JSON(w, http.StatusInternalServerError, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   "failed to fetch todos", // statement
+		}) // statement
+		return // return
+	} // statement
 
-	response.JSON(w, http.StatusOK, response.APIResponse{
-		Success: true,
-		Data:    todos,
-	})
-}
+	response.JSON(w, http.StatusOK, response.APIResponse{ // write a JSON API response
+		Success: true, // statement
+		Data:    todos, // statement
+	}) // statement
+} // statement
 
-func (h *TodoHandler) TodosRoot(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		h.GetTodos(w, r)
-	case http.MethodPost:
-		h.CreateTodo(w, r)
-	default:
-		handlerMethodNotAllowed(w)
-	}
-}
+func (h *TodoHandler) TodosRoot(w http.ResponseWriter, r *http.Request) { // function declaration
+	switch r.Method { // statement
+	case http.MethodGet: // statement
+		h.GetTodos(w, r) // statement
+	case http.MethodPost: // statement
+		h.CreateTodo(w, r) // statement
+	default: // statement
+		handlerMethodNotAllowed(w) // statement
+	} // statement
+} // statement
 
-func (h *TodoHandler) TodosByID(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		h.GetTodoByID(w, r)
-	case http.MethodPatch:
-		h.UpdateTodo(w, r)
-	case http.MethodDelete:
-		h.DeleteTodo(w, r)
-	default:
-		handlerMethodNotAllowed(w)
-	}
-}
+func (h *TodoHandler) TodosByID(w http.ResponseWriter, r *http.Request) { // function declaration
+	switch r.Method { // statement
+	case http.MethodGet: // statement
+		h.GetTodoByID(w, r) // statement
+	case http.MethodPatch: // statement
+		h.UpdateTodo(w, r) // statement
+	case http.MethodDelete: // statement
+		h.DeleteTodo(w, r) // statement
+	default: // statement
+		handlerMethodNotAllowed(w) // statement
+	} // statement
+} // statement
 
-func (h *TodoHandler) GetTodoByID(w http.ResponseWriter, r *http.Request) {
-	id, err := getIDFromPath(r)
-	if err != nil {
-		response.JSON(w, http.StatusBadRequest, response.APIResponse{
-			Success: false,
-			Error:   "invalid todo id",
-		})
-		return
-	}
+func (h *TodoHandler) GetTodoByID(w http.ResponseWriter, r *http.Request) { // function declaration
+	id, err := getIDFromPath(r) // declare and initialize variable
+	if err != nil { // check condition
+		response.JSON(w, http.StatusBadRequest, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   "invalid todo id", // statement
+		}) // statement
+		return // return
+	} // statement
 
-	todo, err := h.service.GetByID(id)
-	if err != nil {
-		status := http.StatusInternalServerError
+	todo, err := h.service.GetByID(id) // declare and initialize variable
+	if err != nil { // check condition
+		status := http.StatusInternalServerError // declare and initialize variable
 
-		if errors.Is(err, repository.ErrTodoNotFound) {
-			status = http.StatusNotFound
-		}
+		if errors.Is(err, repository.ErrTodoNotFound) { // check condition
+			status = http.StatusNotFound // assign value
+		} // statement
 
-		response.JSON(w, status, response.APIResponse{
-			Success: false,
-			Error:   err.Error(),
-		})
-		return
-	}
+		response.JSON(w, status, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   err.Error(), // statement
+		}) // statement
+		return // return
+	} // statement
 
-	response.JSON(w, http.StatusOK, response.APIResponse{
-		Success: true,
-		Data:    todo,
-	})
-}
+	response.JSON(w, http.StatusOK, response.APIResponse{ // write a JSON API response
+		Success: true, // statement
+		Data:    todo, // statement
+	}) // statement
+} // statement
 
-func (h *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
-	id, err := getIDFromPath(r)
-	if err != nil {
-		response.JSON(w, http.StatusBadRequest, response.APIResponse{
-			Success: false,
-			Error:   "invalid todo id",
-		})
-		return
-	}
+func (h *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) { // function declaration
+	id, err := getIDFromPath(r) // declare and initialize variable
+	if err != nil { // check condition
+		response.JSON(w, http.StatusBadRequest, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   "invalid todo id", // statement
+		}) // statement
+		return // return
+	} // statement
 
-	var req domain.UpdateTodoRequest
+	var req domain.UpdateTodoRequest // variable declaration
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		response.JSON(w, http.StatusBadRequest, response.APIResponse{
-			Success: false,
-			Error:   "invalid request body",
-		})
-		return
-	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil { // decode JSON request into struct
+		response.JSON(w, http.StatusBadRequest, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   "invalid request body", // statement
+		}) // statement
+		return // return
+	} // statement
 
-	todo, err := h.service.Update(id, req)
-	if err != nil {
-		status := http.StatusInternalServerError
+	todo, err := h.service.Update(id, req) // declare and initialize variable
+	if err != nil { // check condition
+		status := http.StatusInternalServerError // declare and initialize variable
 
-		if errors.Is(err, repository.ErrTodoNotFound) {
-			status = http.StatusNotFound
-		}
+		if errors.Is(err, repository.ErrTodoNotFound) { // check condition
+			status = http.StatusNotFound // assign value
+		} // statement
 
-		response.JSON(w, status, response.APIResponse{
-			Success: false,
-			Error:   err.Error(),
-		})
-		return
-	}
+		response.JSON(w, status, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   err.Error(), // statement
+		}) // statement
+		return // return
+	} // statement
 
-	response.JSON(w, http.StatusOK, response.APIResponse{
-		Success: true,
-		Message: "todo updated successfully",
-		Data:    todo,
-	})
-}
+	response.JSON(w, http.StatusOK, response.APIResponse{ // write a JSON API response
+		Success: true, // statement
+		Message: "todo updated successfully", // statement
+		Data:    todo, // statement
+	}) // statement
+} // statement
 
-func (h *TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
-	id, err := getIDFromPath(r)
-	if err != nil {
-		response.JSON(w, http.StatusBadRequest, response.APIResponse{
-			Success: false,
-			Error:   "invalid todo id",
-		})
-		return
-	}
+func (h *TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) { // function declaration
+	id, err := getIDFromPath(r) // declare and initialize variable
+	if err != nil { // check condition
+		response.JSON(w, http.StatusBadRequest, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   "invalid todo id", // statement
+		}) // statement
+		return // return
+	} // statement
 
-	err = h.service.Delete(id)
-	if err != nil {
-		status := http.StatusInternalServerError
+	err = h.service.Delete(id) // assign value
+	if err != nil { // check condition
+		status := http.StatusInternalServerError // declare and initialize variable
 
-		if errors.Is(err, repository.ErrTodoNotFound) {
-			status = http.StatusNotFound
-		}
+		if errors.Is(err, repository.ErrTodoNotFound) { // check condition
+			status = http.StatusNotFound // assign value
+		} // statement
 
-		response.JSON(w, status, response.APIResponse{
-			Success: false,
-			Error:   err.Error(),
-		})
-		return
-	}
+		response.JSON(w, status, response.APIResponse{ // write a JSON API response
+			Success: false, // statement
+			Error:   err.Error(), // statement
+		}) // statement
+		return // return
+	} // statement
 
-	response.JSON(w, http.StatusOK, response.APIResponse{
-		Success: true,
-		Message: "todo deleted successfully",
-	})
-}
+	response.JSON(w, http.StatusOK, response.APIResponse{ // write a JSON API response
+		Success: true, // statement
+		Message: "todo deleted successfully", // statement
+	}) // statement
+} // statement
 
-func handlerMethodNotAllowed(w http.ResponseWriter) {
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	w.Write([]byte("Method Not Allowed"))
-}
+func handlerMethodNotAllowed(w http.ResponseWriter) { // function declaration
+	w.WriteHeader(http.StatusMethodNotAllowed) // statement
+	w.Write([]byte("Method Not Allowed")) // statement
+} // statement
 
-func getIDFromPath(r *http.Request) (int, error) {
-	path := strings.TrimPrefix(r.URL.Path, "/todos/")
-	return strconv.Atoi(path)
-}
+func getIDFromPath(r *http.Request) (int, error) { // function declaration
+	path := strings.TrimPrefix(r.URL.Path, "/todos/") // declare and initialize variable
+	return strconv.Atoi(path) // return result or error
+} // statement

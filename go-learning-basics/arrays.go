@@ -1,12 +1,12 @@
-package main
+package main // package declaration
 
-import "fmt"
+import "fmt" // statement
 
 // This function demonstrates arrays in Go.
-func arraysExample() {
+func arraysExample() { // function declaration
     // Arrays have a fixed size.
-    numbers := [3]int{10, 20, 30}
+    numbers := [3]int{10, 20, 30} // declare and initialize variable
 
-    fmt.Println("Array values:")
-    fmt.Println(numbers)
-}
+    fmt.Println("Array values:") // statement
+    fmt.Println(numbers) // statement
+} // statement

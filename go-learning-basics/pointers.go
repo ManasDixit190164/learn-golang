@@ -1,16 +1,16 @@
-package main
+package main // package declaration
 
-import "fmt"
+import "fmt" // statement
 
 // This function demonstrates pointer usage in Go.
-func pointersExample() {
-    value := 10
+func pointersExample() { // function declaration
+    value := 10 // declare and initialize variable
 
     // Create a pointer to value.
-    pointer := &value
+    pointer := &value // declare and initialize variable
 
-    fmt.Println("Pointer example:")
-    fmt.Println("Value:", value)
-    fmt.Println("Pointer address:", pointer)
-    fmt.Println("Value through pointer:", *pointer)
-}
+    fmt.Println("Pointer example:") // statement
+    fmt.Println("Value:", value) // statement
+    fmt.Println("Pointer address:", pointer) // statement
+    fmt.Println("Value through pointer:", *pointer) // statement
+} // statement

@@ -1,12 +1,12 @@
-package main
+package main // package declaration
 
-import "fmt"
+import "fmt" // statement
 
 // printNameAndAge prints a simple variable example.
-func printNameAndAge() {
-    name := "Manas"
-    age := 25
+func printNameAndAge() { // function declaration
+    name := "Manas" // declare and initialize variable
+    age := 25 // declare and initialize variable
 
-    fmt.Println("Name:", name)
-    fmt.Println("Age:", age)
-}
+    fmt.Println("Name:", name) // statement
+    fmt.Println("Age:", age) // statement
+} // statement

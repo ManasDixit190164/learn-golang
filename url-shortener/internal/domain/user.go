@@ -1,33 +1,33 @@
-package domain
+package domain // package declaration for the module
 
-import (
-	"time"
+import ( // start import block
+	"time" // import package
 
-	"github.com/google/uuid"
-)
+	"github.com/google/uuid" // import package
+) // end import block or block scope
 
-type User struct {
-	ID              uuid.UUID `json:"id"`
-	Name            string    `json:"name"`
-	Email           string    `json:"email"`
-	PasswordHash    string    `json:"-"`
-	IsEmailVerified bool      `json:"is_email_verified"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
-}
+type User struct { // declare struct type
+	ID              uuid.UUID `json:"id"` // execute statement
+	Name            string    `json:"name"` // execute statement
+	Email           string    `json:"email"` // execute statement
+	PasswordHash    string    `json:"-"` // execute statement
+	IsEmailVerified bool      `json:"is_email_verified"` // execute statement
+	CreatedAt       time.Time `json:"created_at"` // execute statement
+	UpdatedAt       time.Time `json:"updated_at"` // execute statement
+} // end block
 
-type UserResponse struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
-}
+type UserResponse struct { // declare struct type
+	ID        uuid.UUID `json:"id"` // execute statement
+	Name      string    `json:"name"` // execute statement
+	Email     string    `json:"email"` // execute statement
+	CreatedAt time.Time `json:"created_at"` // execute statement
+} // end block
 
-func NewUserResponse(user User) UserResponse {
-	return UserResponse{
-		ID:        user.ID,
-		Name:      user.Name,
-		Email:     user.Email,
-		CreatedAt: user.CreatedAt,
-	}
-}
+func NewUserResponse(user User) UserResponse { // declare function
+	return UserResponse{ // return statement
+		ID:        user.ID, // execute statement
+		Name:      user.Name, // execute statement
+		Email:     user.Email, // execute statement
+		CreatedAt: user.CreatedAt, // execute statement
+	} // end block
+} // end block

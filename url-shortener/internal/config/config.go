@@ -1,69 +1,69 @@
-package config
+package config // package declaration for the module
 
-import (
-	"errors"
-	"os"
-	"strconv"
-	"time"
+import ( // start import block
+	"errors" // import package
+	"os" // import package
+	"strconv" // import package
+	"time" // import package
 
-	"github.com/joho/godotenv"
-)
+	"github.com/joho/godotenv" // import package
+) // end import block or block scope
 
-type Config struct {
-	AppEnv             string
-	Port               string
-	BaseURL            string
-	DatabaseURL        string
-	JWTAccessSecret    string
-	AccessTokenExpiry  time.Duration
-	RefreshTokenExpiry time.Duration
-	ShortCodeLength    int
-}
+type Config struct { // declare struct type
+	AppEnv             string // execute statement
+	Port               string // execute statement
+	BaseURL            string // execute statement
+	DatabaseURL        string // execute statement
+	JWTAccessSecret    string // execute statement
+	AccessTokenExpiry  time.Duration // execute statement
+	RefreshTokenExpiry time.Duration // execute statement
+	ShortCodeLength    int // execute statement
+} // end block
 
-func Load() (Config, error) {
-	_ = godotenv.Load()
+func Load() (Config, error) { // declare function
+	_ = godotenv.Load() // assign value
 
-	accessExpiry, err := time.ParseDuration(getEnv("ACCESS_TOKEN_EXPIRY", "15m"))
-	if err != nil {
-		return Config{}, err
-	}
+	accessExpiry, err := time.ParseDuration(getEnv("ACCESS_TOKEN_EXPIRY", "15m")) // declare and initialize variable
+	if err != nil { // if condition
+		return Config{}, err // return statement
+	} // end block
 
-	refreshExpiry, err := time.ParseDuration(getEnv("REFRESH_TOKEN_EXPIRY", "168h"))
-	if err != nil {
-		return Config{}, err
-	}
+	refreshExpiry, err := time.ParseDuration(getEnv("REFRESH_TOKEN_EXPIRY", "168h")) // declare and initialize variable
+	if err != nil { // if condition
+		return Config{}, err // return statement
+	} // end block
 
-	shortCodeLength, err := strconv.Atoi(getEnv("SHORT_CODE_LENGTH", "7"))
-	if err != nil {
-		return Config{}, err
-	}
+	shortCodeLength, err := strconv.Atoi(getEnv("SHORT_CODE_LENGTH", "7")) // declare and initialize variable
+	if err != nil { // if condition
+		return Config{}, err // return statement
+	} // end block
 
-	cfg := Config{
-		AppEnv:             getEnv("APP_ENV", "development"),
-		Port:               getEnv("PORT", "8080"),
-		BaseURL:            getEnv("BASE_URL", "http://localhost:8080"),
-		DatabaseURL:        os.Getenv("DATABASE_URL"),
-		JWTAccessSecret:    os.Getenv("JWT_ACCESS_SECRET"),
-		AccessTokenExpiry:  accessExpiry,
-		RefreshTokenExpiry: refreshExpiry,
-		ShortCodeLength:    shortCodeLength,
-	}
+	cfg := Config{ // declare and initialize variable
+		AppEnv:             getEnv("APP_ENV", "development"), // execute statement
+		Port:               getEnv("PORT", "8080"), // execute statement
+		BaseURL:            getEnv("BASE_URL", "http: // execute statement
+		DatabaseURL:        os.Getenv("DATABASE_URL"), // execute statement
+		JWTAccessSecret:    os.Getenv("JWT_ACCESS_SECRET"), // execute statement
+		AccessTokenExpiry:  accessExpiry, // execute statement
+		RefreshTokenExpiry: refreshExpiry, // execute statement
+		ShortCodeLength:    shortCodeLength, // execute statement
+	} // end block
 
-	if cfg.DatabaseURL == "" {
-		return Config{}, errors.New("DATABASE_URL is required")
-	}
+	if cfg.DatabaseURL == "" { // if condition
+		return Config{}, errors.New("DATABASE_URL is required") // return statement
+	} // end block
 
-	if cfg.JWTAccessSecret == "" || cfg.JWTAccessSecret == "change-this-access-secret" {
-		return Config{}, errors.New("JWT_ACCESS_SECRET must be set to a strong secret")
-	}
+	if cfg.JWTAccessSecret == "" || cfg.JWTAccessSecret == "change-this-access-secret" { // if condition
+		return Config{}, errors.New("JWT_ACCESS_SECRET must be set to a strong secret") // return statement
+	} // end block
 
-	return cfg, nil
-}
+	return cfg, nil // return statement
+} // end block
 
-func getEnv(key, fallback string) string {
-	value := os.Getenv(key)
-	if value == "" {
-		return fallback
-	}
-	return value
-}
+func getEnv(key, fallback string) string { // declare function
+	value := os.Getenv(key) // declare and initialize variable
+	if value == "" { // if condition
+		return fallback // return statement
+	} // end block
+	return value // return statement
+} // end block

@@ -1,19 +1,19 @@
-package config
+package config // package declaration
 
-import "os"
+import "os" // statement
 
-type Config struct {
-	Port string
-}
+type Config struct { // type/struct declaration
+	Port string // statement
+} // statement
 
-func Load() Config {
-	port := os.Getenv("PORT")
+func Load() Config { // function declaration
+	port := os.Getenv("PORT") // declare and initialize variable
 
-	if port == "" {
-		port = "8080"
-	}
+	if port == "" { // check condition
+		port = "8080" // assign value
+	} // statement
 
-	return Config{
-		Port: port,
-	}
-}
+	return Config{ // return result or error
+		Port: port, // statement
+	} // statement
+} // statement

@@ -1,87 +1,87 @@
-package main
+package main // package declaration for the module
 
-import (
-	"context"
-	"log/slog"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
+import ( // start import block
+	"context"   // import package
+	"log/slog"  // import package
+	"net/http"  // import package
+	"os"        // import package
+	"os/signal" // import package
+	"syscall"   // import package
+	"time"      // import package
 
-	"github.com/manasdixit/url-shortener/internal/config"
-	"github.com/manasdixit/url-shortener/internal/database"
-	"github.com/manasdixit/url-shortener/internal/handler"
-	"github.com/manasdixit/url-shortener/internal/repository"
-	"github.com/manasdixit/url-shortener/internal/router"
-	"github.com/manasdixit/url-shortener/internal/service"
-	"github.com/manasdixit/url-shortener/internal/utils"
-)
+	"github.com/manasdixit/url-shortener/internal/config"     // import package
+	"github.com/manasdixit/url-shortener/internal/database"   // import package
+	"github.com/manasdixit/url-shortener/internal/handler"    // import package
+	"github.com/manasdixit/url-shortener/internal/repository" // import package
+	"github.com/manasdixit/url-shortener/internal/router"     // import package
+	"github.com/manasdixit/url-shortener/internal/service"    // import package
+	"github.com/manasdixit/url-shortener/internal/utils"      // import package
+) // end import block or block scope
 
-func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+func main() { // declare function
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})) // declare and initialize variable
 
-	cfg, err := config.Load()
-	if err != nil {
-		logger.Error("failed to load config", "error", err)
-		os.Exit(1)
-	}
+	cfg, err := config.Load() // declare and initialize variable
+	if err != nil {           // if condition
+		logger.Error("failed to load config", "error", err) // execute statement
+		os.Exit(1)                                          // execute statement
+	} // end block
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM) // listen for OS signals and shutdown
+	defer stop()                                                                           // defer function call
 
-	db, err := database.NewPostgresPool(ctx, cfg.DatabaseURL)
-	if err != nil {
-		logger.Error("failed to connect database", "error", err)
-		os.Exit(1)
-	}
-	defer db.Close()
+	db, err := database.NewPostgresPool(ctx, cfg.DatabaseURL) // open a Postgres connection pool
+	if err != nil {                                           // if condition
+		logger.Error("failed to connect database", "error", err) // execute statement
+		os.Exit(1)                                               // execute statement
+	} // end block
+	defer db.Close() // defer function call
 
-	jwtManager := utils.NewJWTManager(cfg.JWTAccessSecret, cfg.AccessTokenExpiry)
+	jwtManager := utils.NewJWTManager(cfg.JWTAccessSecret, cfg.AccessTokenExpiry) // create JWT token manager
 
-	userRepo := repository.NewPostgresUserRepository(db)
-	refreshTokenRepo := repository.NewPostgresRefreshTokenRepository(db)
-	urlRepo := repository.NewPostgresURLRepository(db)
-	clickRepo := repository.NewPostgresClickRepository(db)
+	userRepo := repository.NewPostgresUserRepository(db)                 // declare and initialize variable
+	refreshTokenRepo := repository.NewPostgresRefreshTokenRepository(db) // declare and initialize variable
+	urlRepo := repository.NewPostgresURLRepository(db)                   // declare and initialize variable
+	clickRepo := repository.NewPostgresClickRepository(db)               // declare and initialize variable
 
-	authService := service.NewAuthService(userRepo, refreshTokenRepo, jwtManager, cfg.RefreshTokenExpiry)
-	urlService := service.NewURLService(urlRepo, clickRepo, cfg.BaseURL, cfg.ShortCodeLength)
+	authService := service.NewAuthService(userRepo, refreshTokenRepo, jwtManager, cfg.RefreshTokenExpiry) // instantiate authentication service
+	urlService := service.NewURLService(urlRepo, clickRepo, cfg.BaseURL, cfg.ShortCodeLength)             // instantiate short URL service
 
-	authHandler := handler.NewAuthHandler(authService)
-	urlHandler := handler.NewURLHandler(urlService, logger)
+	authHandler := handler.NewAuthHandler(authService)      // instantiate auth HTTP handler
+	urlHandler := handler.NewURLHandler(urlService, logger) // instantiate URL HTTP handler
 
-	r := router.New(router.Dependencies{
-		AuthHandler: authHandler,
-		URLHandler:  urlHandler,
-		JWTManager:  jwtManager,
-	})
+	r := router.New(router.Dependencies{ // build HTTP router and routes
+		AuthHandler: authHandler, // execute statement
+		URLHandler:  urlHandler,  // execute statement
+		JWTManager:  jwtManager,  // execute statement
+	}) // close block
 
-	srv := &http.Server{
-		Addr:         ":" + cfg.Port,
-		Handler:      r,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  60 * time.Second,
-	}
+	srv := &http.Server{ // configure HTTP server settings
+		Addr:         ":" + cfg.Port,   // execute statement
+		Handler:      r,                // execute statement
+		ReadTimeout:  10 * time.Second, // execute statement
+		WriteTimeout: 10 * time.Second, // execute statement
+		IdleTimeout:  60 * time.Second, // execute statement
+	} // end block
 
-	go func() {
-		logger.Info("server started", "port", cfg.Port)
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Error("server error", "error", err)
-			os.Exit(1)
-		}
-	}()
+	go func() { // start goroutine
+		logger.Info("server started", "port", cfg.Port)                             // execute statement
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed { // start HTTP server
+			logger.Error("server error", "error", err) // execute statement
+			os.Exit(1)                                 // execute statement
+		} // end block
+	}() // close block
 
-	<-ctx.Done()
-	logger.Info("shutting down server")
+	<-ctx.Done()                        // execute statement
+	logger.Info("shutting down server") // execute statement
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second) // create a context with timeout
+	defer cancel()                                                                   // defer function call
 
-	if err := srv.Shutdown(shutdownCtx); err != nil {
-		logger.Error("server forced to shutdown", "error", err)
-		os.Exit(1)
-	}
+	if err := srv.Shutdown(shutdownCtx); err != nil { // stop server gracefully
+		logger.Error("server forced to shutdown", "error", err) // execute statement
+		os.Exit(1)                                              // execute statement
+	} // end block
 
-	logger.Info("server stopped")
-}
+	logger.Info("server stopped") // execute statement
+} // end block

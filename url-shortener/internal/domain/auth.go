@@ -1,26 +1,26 @@
-package domain
+package domain // package declaration for the module
 
-type SignupRequest struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+type SignupRequest struct { // declare struct type
+	Name     string `json:"name"` // execute statement
+	Email    string `json:"email"` // execute statement
+	Password string `json:"password"` // execute statement
+} // end block
 
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+type LoginRequest struct { // declare struct type
+	Email    string `json:"email"` // execute statement
+	Password string `json:"password"` // execute statement
+} // end block
 
-type RefreshTokenRequest struct {
-	RefreshToken string `json:"refresh_token"`
-}
+type RefreshTokenRequest struct { // declare struct type
+	RefreshToken string `json:"refresh_token"` // execute statement
+} // end block
 
-type LogoutRequest struct {
-	RefreshToken string `json:"refresh_token"`
-}
+type LogoutRequest struct { // declare struct type
+	RefreshToken string `json:"refresh_token"` // execute statement
+} // end block
 
-type AuthResponse struct {
-	User         UserResponse `json:"user"`
-	AccessToken  string       `json:"access_token"`
-	RefreshToken string       `json:"refresh_token"`
-}
+type AuthResponse struct { // declare struct type
+	User         UserResponse `json:"user"` // execute statement
+	AccessToken  string       `json:"access_token"` // execute statement
+	RefreshToken string       `json:"refresh_token"` // execute statement
+} // end block

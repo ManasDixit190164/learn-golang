@@ -1,19 +1,19 @@
-package response
+package response // package declaration
 
-import (
-	"encoding/json"
-	"net/http"
-)
+import ( // start import block
+	"encoding/json" // import package
+	"net/http" // import package
+) // end import block or close block
 
-type APIResponse struct {
-	Success bool        `json:"success"`
-	Message string      `json:"message,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   string      `json:"error,omitempty"`
-}
+type APIResponse struct { // type/struct declaration
+	Success bool        `json:"success"` // statement
+	Message string      `json:"message,omitempty"` // statement
+	Data    interface{} `json:"data,omitempty"` // statement
+	Error   string      `json:"error,omitempty"` // statement
+} // statement
 
-func JSON(w http.ResponseWriter, statusCode int, payload APIResponse) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(payload)
-}
+func JSON(w http.ResponseWriter, statusCode int, payload APIResponse) { // function declaration
+	w.Header().Set("Content-Type", "application/json") // statement
+	w.WriteHeader(statusCode) // statement
+	json.NewEncoder(w).Encode(payload) // statement
+} // statement

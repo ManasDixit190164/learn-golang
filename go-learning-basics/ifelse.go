@@ -1,12 +1,12 @@
-package main
+package main // package declaration
 
-import "fmt"
+import "fmt" // statement
 
 // checkAge prints a message based on the age value.
-func checkAge(age int) {
-    if age >= 18 {
-        fmt.Println("You are an adult")
-    } else {
-        fmt.Println("You are a minor")
-    }
-}
+func checkAge(age int) { // function declaration
+    if age >= 18 { // check condition
+        fmt.Println("You are an adult") // statement
+    } else { // statement
+        fmt.Println("You are a minor") // statement
+    } // statement
+} // statement

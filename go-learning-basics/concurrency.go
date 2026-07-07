@@ -1,19 +1,19 @@
-package main
+package main // package declaration
 
-import (
-    "fmt"
-    "time"
-)
+import ( // start import block
+    "fmt" // import package
+    "time" // import package
+) // end import block or close block
 
 // This function demonstrates a simple goroutine.
-func concurrencyExample() {
-    fmt.Println("Concurrency example:")
+func concurrencyExample() { // function declaration
+    fmt.Println("Concurrency example:") // statement
 
-    go func() {
-        time.Sleep(100 * time.Millisecond)
-        fmt.Println("Goroutine finished")
-    }()
+    go func() { // start asynchronous goroutine
+        time.Sleep(100 * time.Millisecond) // statement
+        fmt.Println("Goroutine finished") // statement
+    }() // statement
 
-    fmt.Println("Main function continues")
-    time.Sleep(200 * time.Millisecond)
-}
+    fmt.Println("Main function continues") // statement
+    time.Sleep(200 * time.Millisecond) // statement
+} // statement
