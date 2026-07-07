@@ -9,12 +9,12 @@ import ( // start import block
 func NewRouter(todoHandler *handler.TodoHandler) *http.ServeMux { // function declaration
 	mux := http.NewServeMux() // declare and initialize variable
 
-	mux.HandleFunc("/todos", todoHandler.TodosRoot) // statement
+	mux.HandleFunc("/todos", todoHandler.TodosRoot)  // statement
 	mux.HandleFunc("/todos/", todoHandler.TodosByID) // statement
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) { // statement
 		w.WriteHeader(http.StatusOK) // statement
-		w.Write([]byte("OK")) // statement
+		w.Write([]byte("OK"))        // statement
 	}) // statement
 
 	return mux // return result or error
